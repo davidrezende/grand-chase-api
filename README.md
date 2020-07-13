@@ -1,1 +1,1 @@
-# gc-panel
+# Grand Chase API
