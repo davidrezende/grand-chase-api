@@ -30,6 +30,7 @@ public class User {
     private Integer connecting;	//bit
 //    private String modeLevel;	//varbinary
     private Integer channelingID;	//tinyint
+
     private Integer grade; //	int
     private String email; //	varchar(max)
 }
