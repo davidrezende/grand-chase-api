@@ -1,11 +1,12 @@
-package br.com.gcpanel.repository;
+package br.com.gc.api.repository;
 
-import br.com.gcpanel.model.User;
+import br.com.gc.api.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByLogin(String login);
+
+    Optional<User> findByLoginUID(Integer loginUID);
 }
