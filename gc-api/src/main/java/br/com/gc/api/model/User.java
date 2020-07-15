@@ -21,15 +21,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer loginUID;
-    @Email(message = "Email invalido")
+    @Email(message = "Invalid email field")
     private String email; //	varchar(max)
-    @NotBlank(message = "O campo login nao pode ser vazio")
-    @Size(min = 4, max = 12, message = "Tamanho invalido para o campo login")
+    @NotBlank(message = "Invalid login field")
+    @Size(min = 4, max = 12, message = "Invalid size for login field")
     private String login;
-    @NotBlank(message = "O campo senha nao pode ser vazio")
-    @Size(min = 4, max = 12, message = "Tamanho invalido para o campo senha")
+    @NotBlank(message = "Invalid password field")
+    @Size(min = 4, max = 12, message = "Invalid size for password field")
     private String passwd;
-    @NotNull(message = "Sexo invalido")
+    @NotNull(message = "Invalid sex field")
     private Integer sex;
     private Date firstLogin;//smalldatetime
     private Date lastConnect;	//smalldatetime

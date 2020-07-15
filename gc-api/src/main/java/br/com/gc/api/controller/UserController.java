@@ -21,7 +21,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping(path = "/find/login/{login}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<User> getEmployeeById(@PathVariable String login)
+    public ResponseEntity<User> getUserInfo(@PathVariable String login)
             throws Exception {
         log.info("Iniciando a busca");
         User user = userRepository.findByLogin(login)
