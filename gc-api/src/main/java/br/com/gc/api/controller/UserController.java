@@ -2,6 +2,7 @@ package br.com.gc.api.controller;
 
 import br.com.gc.api.model.User;
 import br.com.gc.api.repository.UserRepository;
+import br.com.gc.api.util.DateFormatSQLServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class UserController {
 
         log.info("Saving new user:");
         user.setIpAddress("127.0.0.1");
-        user.setFirstLogin(new Date());
-        user.setLastConnect(new Date());
-        user.setLastLogin(new Date());
+        user.setFirstLogin(DateFormatSQLServer.format(new Date()));
+        user.setLastConnect(DateFormatSQLServer.format(new Date()));
+        user.setLastLogin(DateFormatSQLServer.format(new Date()));
         log.info(user.toString());
 
         return ResponseEntity.ok().body(userRepository.save(user));

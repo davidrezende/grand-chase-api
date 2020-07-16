@@ -31,9 +31,9 @@ public class User {
     private String passwd;
     @NotNull(message = "Invalid sex field")
     private Integer sex;
-    private Date firstLogin;//smalldatetime
-    private Date lastConnect;	//smalldatetime
-    private Date lastLogin;	//smalldatetime
+    private String firstLogin;//smalldatetime
+    private String lastConnect;	//smalldatetime
+    private String lastLogin;	//smalldatetime
     private int playTime;//	int
     private int gamePoint;//	int
     private String ipAddress;	//nvarchar

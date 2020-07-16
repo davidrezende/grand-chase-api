@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Getter
@@ -25,7 +26,7 @@ public class UserItem {
     private Integer itemID;
     @NotNull(message = "Item type for this user uninformed")
     private Integer gradeID;
-    private Date delDateA;
+    private String delDateA;
     private Integer delState = 0;
     private String WIGAUID = "-1";
 }
