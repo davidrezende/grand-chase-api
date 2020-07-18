@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -14,25 +15,22 @@ import java.io.Serializable;
 @Setter
 @ToString
 @Entity
+@IdClass(UserItemAttributeId.class)
 @Table(name = "UIGAUserItemAttribute")
-public class UserItemAttribute implements Serializable {
+public class UserItemAttribute {
     /*  insert into gc.dbo.UIGAUserItemAttribute (LoginUID, ItemUID, SlotID, TypeID, Value, AttributeState)
       VALUES (@loginid1, @itemuid1, '0', '-1', '0', '0')*/
 
-
-    @NotNull(message = "Login ID for this user uninformed")
     @Id
     private Integer loginUID;
-    @NotNull(message = "Item ID uninformed")
     @Id
-    private Integer itemUID;
-    @NotNull(message = "Slot ID uninformed")
+    private Long itemUID;
     @Id
-    private Integer slotID;
+    private int slotID;
     @NotNull(message = "Type ID uninformed")
-    private String typeID;
+    private int typeID;
     @NotNull(message = "Value uninformed")
-    private Integer value;
+    private int value;
     @NotNull(message = "Attribute state uninformed")
-    private Integer attributeState;
+    private int attributeState;
 }

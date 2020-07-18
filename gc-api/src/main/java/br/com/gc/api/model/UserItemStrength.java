@@ -6,16 +6,17 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 @Getter
 @Setter
 @ToString
 @Entity
+@IdClass(UserItemStrengthId.class)
 @Table(name = "UIGAUserItemStrength")
-public class UserItemStrength implements Serializable {
+public class UserItemStrength {
 
 /*
     insert into gc.dbo.UIGAUserItemStrength (LoginUID, ItemUID, StrengthOrder, StrengthLevel, EquippedItemUID)
@@ -26,11 +27,12 @@ public class UserItemStrength implements Serializable {
     private Integer loginUID;
     @NotNull
     @Id
-    private Integer itemUID;
+    private Long itemUID;
     @NotNull
+    @Id
     private Integer strengthOrder;
     @NotNull
-    private Integer strenghtLevel;
+    private Integer strengthLevel;
     @NotNull
     private Integer equippedItemUID;
 
