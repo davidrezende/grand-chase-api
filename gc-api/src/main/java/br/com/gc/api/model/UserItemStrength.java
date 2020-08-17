@@ -27,14 +27,14 @@ public class UserItemStrength {
     private Integer loginUID;
     @NotNull
     @Id
-    private Long itemUID;
+    private Long itemUID; //stone
     @NotNull
     @Id
     private Integer strengthOrder;
     @NotNull
     private Integer strengthLevel;
     @NotNull
-    private Integer equippedItemUID;
+    private Long equippedItemUID; //itemUID
 
 
 }

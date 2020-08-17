@@ -1,5 +1,6 @@
 package br.com.gc.api.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Setter
 @ToString
 @Entity
+@AllArgsConstructor
 @Table(name = "UIGAUserItem")
 public class UserItem {
     /*    insert into UIGAUserItem  (LoginUID, ItemID, GradeID, DelDateA, DelState, WIGAUID)

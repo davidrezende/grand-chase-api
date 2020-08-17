@@ -1,5 +1,6 @@
 package br.com.gc.api.controller;
 
+import br.com.gc.api.GlobalConstants;
 import br.com.gc.api.model.User;
 import br.com.gc.api.repository.UserRepository;
 import br.com.gc.api.util.DateFormatSQLServer;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -33,14 +35,12 @@ public class UserController {
     @PostMapping(path = "/save", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> newUser(@RequestBody User user)
             throws Exception {
-
         log.info("Saving new user:");
         user.setIpAddress("127.0.0.1");
-        user.setFirstLogin(DateFormatSQLServer.format(new Date()));
-        user.setLastConnect(DateFormatSQLServer.format(new Date()));
-        user.setLastLogin(DateFormatSQLServer.format(new Date()));
+        user.setFirstLogin(DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT));
+        user.setLastConnect(DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT));
+        user.setLastLogin(DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT));
         log.info(user.toString());
-
         return ResponseEntity.ok().body(userRepository.save(user));
     }
 
@@ -57,10 +57,8 @@ public class UserController {
             throws Exception {
         log.info("Excluding user:");
         log.info(user.toString());
-
         userRepository.findByLoginUID(user.getLoginUID())
-        .orElseThrow(() -> new Exception("User not found for this loginUID:: " + user.getLoginUID()));
-
+                .orElseThrow(() -> new Exception("User not found for this loginUID:: " + user.getLoginUID()));
         userRepository.delete(user);
     }
 }
