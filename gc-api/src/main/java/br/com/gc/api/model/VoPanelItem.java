@@ -15,6 +15,8 @@ import java.util.List;
 public class VoPanelItem {
 
     private UserItem item;
+    private Integer amountStack;
+    private Integer timeItem;
     private List<UserItemAttribute> attributes;
     private List<UserItemSocket> cards;
     private Integer levelStrength;

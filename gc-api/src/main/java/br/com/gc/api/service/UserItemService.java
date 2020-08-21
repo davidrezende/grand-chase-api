@@ -2,10 +2,7 @@ package br.com.gc.api.service;
 
 import br.com.gc.api.GlobalConstants;
 import br.com.gc.api.model.*;
-import br.com.gc.api.repository.UserItemAttributeRepository;
-import br.com.gc.api.repository.UserItemRepository;
-import br.com.gc.api.repository.UserItemSocketRepository;
-import br.com.gc.api.repository.UserItemStrengthRepository;
+import br.com.gc.api.repository.*;
 import br.com.gc.api.util.DateFormatSQLServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +22,12 @@ public class UserItemService {
     public final UserItemSocketRepository userItemSocketRepository;
     public final UserItemAttributeRepository userItemAttributeRepository;
     public final UserItemStrengthRepository userItemStrengthRepository;
+    public final UserItemDurationRepository userItemDurationRepository;
+    public final UserItemPeriodRepository userItemPeriodRepository;
 
     public UserItem addItemUser(UserItem item) {
         log.info("Adding new item ::" + item.getItemID() + " for login ID::" + item.getLoginUID());
+
         item.setDelDateA(DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT));
         item.setWIGAUID("-1");
         item.setDelState(0);
@@ -62,77 +63,132 @@ public class UserItemService {
         return userItemStrengthRepository.save(level);
     }
 
+    public UserItemDuration stackItemUser(UserItemDuration stack) {
+        log.info("Stacking itemUID:: " + stack.getItemUID() + " with amount::"
+                + stack.getDuration());
+        return userItemDurationRepository.save(stack);
+    }
+
+    public UserItemPeriod addPeriodItemUser(UserItemPeriod period) {
+        log.info("Adding temporary itemUID:: " + period.getItemUID() + " with number of days::"
+                + period.getPeriod());
+        return userItemPeriodRepository.save(period);
+    }
+
     public VoPanelItem addItemPanel(VoPanelItem item) throws Exception {
         log.info("Adding itemID::" + item.getItem().getItemID() + " from panel. Player::" + item.getItem().getLoginUID());
         UserItem addedItem = addItemUser(item.getItem());
-
-        log.info("Adding attributes from this item");
-        //if none attribute exists in vo create empty slots of attributes
-
-        List<UserItemAttribute> attributes = new ArrayList<UserItemAttribute>();
-
-        if(item.getAttributes() == null || item.getAttributes().isEmpty() ){
-            for (int i=1; i< addedItem.getGradeID()+2; i++){
-                UserItemAttribute attribute = new UserItemAttribute();
-                attribute.setLoginUID(addedItem.getLoginUID());
-                attribute.setItemUID(addedItem.getItemUID());
-                attribute.setSlotID(i-1);
-                attribute.setTypeID(-1);
-                attribute.setValue(0);
-                attribute.setAttributeState(0);
-                attributes.add(attribute);
-                if(addAttributeItemUser(attribute) == null){
-                    throw  new Exception("An error occurred while inserting an attribute: "
-                            + attribute.toString() + " to the item: "+ addedItem.toString());
-                }
-            }
-            item.setAttributes(attributes);
+        if (addedItem == null) {
+            throw new Exception("An error occurred while inserting an item:: "
+                    + item.getItem().toString());
         }
 
+        log.info("Adding temporary item::" + item.getItem().getItemID() + " from panel. Player::" + item.getItem().getLoginUID()
+                + ". Number of days::" + item.getTimeItem());
+        if (item.getTimeItem() != null && item.getTimeItem() > 0 && item.getTimeItem() < 1000) {
+            UserItemPeriod periodItem = new UserItemPeriod();
+            periodItem.setLoginUID(addedItem.getLoginUID());
+            periodItem.setItemUID(addedItem.getItemUID());
+            periodItem.setPeriod(item.getTimeItem());
 
-        log.info("Adding card slots from this item");
-        List<UserItemSocket> cards = new ArrayList<UserItemSocket>();
-        // if none card exists in vo create empty slots of cards
-        if( item.getCards() == null || item.getCards().isEmpty()){
-            for (int i = 1; i <= addedItem.getGradeID(); i++){
-                UserItemSocket card = new UserItemSocket();
-                card.setLoginUID(addedItem.getLoginUID());
-                card.setItemUID(addedItem.getItemUID());
-                card.setSlotID(i-1);
-                card.setCardID(0);
-                card.setSocketState(2);
-                if(addCardItemUser(card) == null){
-                    throw  new Exception("An error occurred while inserting an card: "
-                            + card.toString() + " to the item: "+ addedItem.toString());
-                }
-                cards.add(card);
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.DATE, +item.getTimeItem());
+
+            periodItem.setEndDate(DateFormatSQLServer.format(c.getTime(), GlobalConstants.DATE_TIME_FORMAT));
+            UserItemPeriod periodItemResponse = addPeriodItemUser(periodItem);
+            if (periodItemResponse == null) {
+                throw new Exception("An error occurred while inserting an period item:: "
+                        + periodItem.toString());
             }
-            item.setCards(cards);
         }
 
-        // if anything level strength exist in vo strengthen the item
-        if(item.getLevelStrength() != null){
-            log.info("Adding stone item for fortify the item");
-            UserItem stoneItem = addItemUser(new UserItem(null,
-                    addedItem.getLoginUID(),
-                    62727,
-                    2,
-                    DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT),
-                    0,
-                    "-1"));
+        //if item have stack amount when
+        //not insert attributes, slot cards or fortify item
 
-            UserItemStrength level = new UserItemStrength();
-            level.setLoginUID(addedItem.getLoginUID());
-            level.setItemUID(stoneItem.getItemUID());
-            level.setEquippedItemUID(addedItem.getItemUID());
-            level.setStrengthOrder(1);
-            level.setStrengthLevel(item.getLevelStrength());
-
-            log.info("Fortify this item from level::" + item.getLevelStrength());
-            if(strengthenItemUser(level) == null){
-                throw  new Exception("An error occurred while fortify "
-                        + level.toString() + " with stone: "+ stoneItem.toString() + " to the item: "+ addedItem.toString());
+        log.info("Adding stack item::" + item.getItem().getItemID() + " from panel. Player::" + item.getItem().getLoginUID()
+                + ". Amount::" + item.getAmountStack());
+        if (item.getAmountStack() != null && item.getAmountStack() > 0 && item.getAmountStack() < 1000) {
+            UserItemDuration stackObject = new UserItemDuration();
+            stackObject.setLoginUID(addedItem.getLoginUID());
+            stackObject.setItemUID(addedItem.getItemUID());
+            stackObject.setDuration(item.getAmountStack());
+            UserItemDuration stackResponse = stackItemUser(stackObject);
+            if (stackResponse == null) {
+                throw new Exception("An error occurred while inserting an stack:: "
+                        + stackObject.toString());
             }
+
+        } else {
+
+            //if none attribute exists in vo create empty slots of attributes
+            List<UserItemAttribute> attributes = new ArrayList<>();
+
+            log.info("Adding card slots from this item");
+            List<UserItemSocket> cards = new ArrayList<>();
+            // if none card exists in vo create empty slots of cards
+            if (item.getCards() == null || item.getCards().isEmpty()) {
+                for (int i = 1; i <= addedItem.getGradeID(); i++) {
+                    UserItemSocket card = new UserItemSocket();
+                    card.setLoginUID(addedItem.getLoginUID());
+                    card.setItemUID(addedItem.getItemUID());
+                    card.setSlotID(i - 1);
+                    card.setCardID(0);
+                    card.setSocketState(2);
+                    if (addCardItemUser(card) == null) {
+                        throw new Exception("An error occurred while inserting an card: "
+                                + card.toString() + " to the item: " + addedItem.toString());
+                    }
+                    cards.add(card);
+                }
+                item.setCards(cards);
+            }
+
+            log.info("Adding attributes from this item");
+            if (item.getAttributes() == null || item.getAttributes().isEmpty()) {
+                if(item.getItem().getGradeID() != 0){ // for items with normal rarity not insert prop
+                    for (int i = 1; i < addedItem.getGradeID() + 2; i++) {
+                        UserItemAttribute attribute = new UserItemAttribute();
+                        attribute.setLoginUID(addedItem.getLoginUID());
+                        attribute.setItemUID(addedItem.getItemUID());
+                        attribute.setSlotID(i - 1);
+                        attribute.setTypeID(-1);
+                        attribute.setValue(0);
+                        attribute.setAttributeState(0);
+                        attributes.add(attribute);
+                        if (addAttributeItemUser(attribute) == null) {
+                            throw new Exception("An error occurred while inserting an attribute: "
+                                    + attribute.toString() + " to the item: " + addedItem.toString());
+                        }
+                    }
+                    item.setAttributes(attributes);
+                }
+            }
+
+            // if anything level strength exist in vo strengthen the item
+            if (item.getLevelStrength() != null) {
+                log.info("Adding stone item for fortify the item");
+                UserItem stoneItem = addItemUser(new UserItem(null,
+                        addedItem.getLoginUID(),
+                        62727,
+                        2,
+                        DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT),
+                        0,
+                        "-1"));
+
+                UserItemStrength level = new UserItemStrength();
+                level.setLoginUID(addedItem.getLoginUID());
+                level.setItemUID(stoneItem.getItemUID());
+                level.setEquippedItemUID(addedItem.getItemUID());
+                level.setStrengthOrder(1);
+                level.setStrengthLevel(item.getLevelStrength());
+
+                log.info("Fortify this item from level::" + item.getLevelStrength());
+                if (strengthenItemUser(level) == null) {
+                    throw new Exception("An error occurred while fortify "
+                            + level.toString() + " with stone: " + stoneItem.toString() + " to the item: " + addedItem.toString());
+                }
+            }
+
         }
         return item;
     }

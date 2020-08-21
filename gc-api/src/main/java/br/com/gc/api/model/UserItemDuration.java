@@ -7,28 +7,24 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.util.Date;
 
 @Getter
 @Setter
 @ToString
 @Entity
-@AllArgsConstructor
-@Table(name = "UIGAUserItem")
-public class UserItem {
+@IdClass(UserItemDurationId.class)
+@Table(name = "UIGAUserItemDuration")
+public class UserItemDuration{
     /*    insert into UIGAUserItem  (LoginUID, ItemID, GradeID, DelDateA, DelState, WIGAUID)
         values(@loginid1,@itemid1,'3',getdate(),'0','-1')*/
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull(message = "Item UID for this user uninformed")
     private Long itemUID;
+
+    @Id
     @NotNull(message = "Login UID for this user uninformed")
     private Integer loginUID;
-    @NotNull(message = "Item UID for this user uninformed")
-    private Integer itemID;
-    @NotNull(message = "Item type for this user uninformed")
-    private Integer gradeID;
-    private String delDateA;
-    private Integer delState = 0;
-    private String WIGAUID = "-1";
+
+    @NotNull(message = "Amount stack item uninformed")
+    private Integer duration;
 }
