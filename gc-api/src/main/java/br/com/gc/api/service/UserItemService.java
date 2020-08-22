@@ -165,7 +165,7 @@ public class UserItemService {
             }
 
             // if anything level strength exist in vo strengthen the item
-            if (item.getLevelStrength() != null) {
+            if (item.getLevelStrength() != null && item.getLevelStrength() >= 0 && item.getLevelStrength() <= 17) {
                 log.info("Adding stone item for fortify the item");
                 UserItem stoneItem = addItemUser(new UserItem(null,
                         addedItem.getLoginUID(),
