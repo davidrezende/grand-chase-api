@@ -121,74 +121,80 @@ public class UserItemService {
         } else {
 
             //if none attribute exists in vo create empty slots of attributes
-            List<UserItemAttribute> attributes = new ArrayList<>();
 
-            log.info("Adding card slots from this item");
-            List<UserItemSocket> cards = new ArrayList<>();
-            // if none card exists in vo create empty slots of cards
-            if (item.getCards() == null || item.getCards().isEmpty()) {
-                for (int i = 1; i <= addedItem.getGradeID(); i++) {
-                    UserItemSocket card = new UserItemSocket();
-                    card.setLoginUID(addedItem.getLoginUID());
-                    card.setItemUID(addedItem.getItemUID());
-                    card.setSlotID(i - 1);
-                    card.setCardID(0);
-                    card.setSocketState(2);
-                    if (addCardItemUser(card) == null) {
-                        throw new Exception("An error occurred while inserting an card: "
-                                + card.toString() + " to the item: " + addedItem.toString());
-                    }
-                    cards.add(card);
-                }
-                item.setCards(cards);
-            }
+            if (item.getIsEquipment() != null && item.getIsEquipment()) {
 
-            log.info("Adding attributes from this item");
-            if (item.getAttributes() == null || item.getAttributes().isEmpty()) {
-                if(item.getItem().getGradeID() != 0){ // for items with normal rarity not insert prop
-                    for (int i = 1; i < addedItem.getGradeID() + 2; i++) {
-                        UserItemAttribute attribute = new UserItemAttribute();
-                        attribute.setLoginUID(addedItem.getLoginUID());
-                        attribute.setItemUID(addedItem.getItemUID());
-                        attribute.setSlotID(i - 1);
-                        attribute.setTypeID(-1);
-                        attribute.setValue(0);
-                        attribute.setAttributeState(0);
-                        attributes.add(attribute);
-                        if (addAttributeItemUser(attribute) == null) {
-                            throw new Exception("An error occurred while inserting an attribute: "
-                                    + attribute.toString() + " to the item: " + addedItem.toString());
+                if (item.getIsAcessory() != null && !item.getIsAcessory()) {
+
+                    log.info("Adding card slots from this item");
+                    List<UserItemSocket> cards = new ArrayList<>();
+                    // if none card exists in vo create empty slots of cards
+                    if (item.getCards() == null || item.getCards().isEmpty()) {
+                        for (int i = 1; i <= addedItem.getGradeID(); i++) {
+                            UserItemSocket card = new UserItemSocket();
+                            card.setLoginUID(addedItem.getLoginUID());
+                            card.setItemUID(addedItem.getItemUID());
+                            card.setSlotID(i - 1);
+                            card.setCardID(0);
+                            card.setSocketState(2);
+                            if (addCardItemUser(card) == null) {
+                                throw new Exception("An error occurred while inserting an card: "
+                                        + card.toString() + " to the item: " + addedItem.toString());
+                            }
+                            cards.add(card);
                         }
+                        item.setCards(cards);
                     }
-                    item.setAttributes(attributes);
+
+                }
+                
+                log.info("Adding attributes from this item");
+                List<UserItemAttribute> attributes = new ArrayList<>();
+                if (item.getAttributes() == null || item.getAttributes().isEmpty()) {
+                    if (item.getItem().getGradeID() != 0) { // for items with normal rarity not insert prop
+                        for (int i = 1; i < addedItem.getGradeID() + 2; i++) {
+                            UserItemAttribute attribute = new UserItemAttribute();
+                            attribute.setLoginUID(addedItem.getLoginUID());
+                            attribute.setItemUID(addedItem.getItemUID());
+                            attribute.setSlotID(i - 1);
+                            attribute.setTypeID(-1);
+                            attribute.setValue(0);
+                            attribute.setAttributeState(0);
+                            attributes.add(attribute);
+                            if (addAttributeItemUser(attribute) == null) {
+                                throw new Exception("An error occurred while inserting an attribute: "
+                                        + attribute.toString() + " to the item: " + addedItem.toString());
+                            }
+                        }
+                        item.setAttributes(attributes);
+                    }
+                }
+
+                // if anything level strength exist in vo strengthen the item
+                if (item.getLevelStrength() != null && item.getLevelStrength() >= 0 && item.getLevelStrength() <= 17) {
+                    log.info("Adding stone item for fortify the item");
+                    UserItem stoneItem = addItemUser(new UserItem(null,
+                            addedItem.getLoginUID(),
+                            62727,
+                            2,
+                            DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT),
+                            0,
+                            "-1"));
+
+                    UserItemStrength level = new UserItemStrength();
+                    level.setLoginUID(addedItem.getLoginUID());
+                    level.setItemUID(stoneItem.getItemUID());
+                    level.setEquippedItemUID(addedItem.getItemUID());
+                    level.setStrengthOrder(1);
+                    level.setStrengthLevel(item.getLevelStrength());
+
+                    log.info("Fortify this item from level::" + item.getLevelStrength());
+                    if (strengthenItemUser(level) == null) {
+                        throw new Exception("An error occurred while fortify "
+                                + level.toString() + " with stone: " + stoneItem.toString() + " to the item: " + addedItem.toString());
+                    }
                 }
             }
-
-            // if anything level strength exist in vo strengthen the item
-            if (item.getLevelStrength() != null && item.getLevelStrength() >= 0 && item.getLevelStrength() <= 17) {
-                log.info("Adding stone item for fortify the item");
-                UserItem stoneItem = addItemUser(new UserItem(null,
-                        addedItem.getLoginUID(),
-                        62727,
-                        2,
-                        DateFormatSQLServer.format(new Date(), GlobalConstants.DATE_TIME_FORMAT),
-                        0,
-                        "-1"));
-
-                UserItemStrength level = new UserItemStrength();
-                level.setLoginUID(addedItem.getLoginUID());
-                level.setItemUID(stoneItem.getItemUID());
-                level.setEquippedItemUID(addedItem.getItemUID());
-                level.setStrengthOrder(1);
-                level.setStrengthLevel(item.getLevelStrength());
-
-                log.info("Fortify this item from level::" + item.getLevelStrength());
-                if (strengthenItemUser(level) == null) {
-                    throw new Exception("An error occurred while fortify "
-                            + level.toString() + " with stone: " + stoneItem.toString() + " to the item: " + addedItem.toString());
-                }
-            }
-
         }
         return item;
     }

@@ -20,4 +20,6 @@ public class VoPanelItem {
     private List<UserItemAttribute> attributes;
     private List<UserItemSocket> cards;
     private Integer levelStrength;
+    private Boolean isEquipment;
+    private Boolean isAcessory;
 }
