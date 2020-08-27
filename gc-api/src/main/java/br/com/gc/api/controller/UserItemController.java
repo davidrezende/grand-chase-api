@@ -4,6 +4,7 @@ import br.com.gc.api.GlobalConstants;
 import br.com.gc.api.model.*;
 import br.com.gc.api.service.UserItemService;
 import br.com.gc.api.util.DateFormatSQLServer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,10 +18,9 @@ import java.util.Date;
 @CrossOrigin
 @RequestMapping("/api/v1/item")
 @RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserItemController {
-
-    @Autowired
-    public UserItemService userItemService;
+    public final UserItemService userItemService;
 
     @PostMapping(path = "/newItemFromPanel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VoPanelItem> newItemPanel(@RequestBody VoPanelItem item) throws Exception {
