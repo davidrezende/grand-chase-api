@@ -1,6 +1,6 @@
 package br.com.gc.api.controller;
 
-import br.com.gc.api.GlobalConstants;
+import br.com.gc.api.constants.GlobalConstants;
 import br.com.gc.api.model.*;
 import br.com.gc.api.service.UserItemService;
 import br.com.gc.api.util.DateFormatSQLServer;
@@ -19,7 +19,7 @@ import java.util.Date;
 @RequestMapping("/api/v1/item")
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class UserItemController {
+public class ItemController {
     public final UserItemService userItemService;
 
     @PostMapping(path = "/newItemFromPanel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

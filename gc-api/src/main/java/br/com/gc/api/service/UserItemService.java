@@ -1,6 +1,6 @@
 package br.com.gc.api.service;
 
-import br.com.gc.api.GlobalConstants;
+import br.com.gc.api.constants.GlobalConstants;
 import br.com.gc.api.model.*;
 import br.com.gc.api.repository.*;
 import br.com.gc.api.util.DateFormatSQLServer;

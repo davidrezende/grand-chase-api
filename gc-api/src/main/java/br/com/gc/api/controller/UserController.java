@@ -1,19 +1,17 @@
 package br.com.gc.api.controller;
 
-import br.com.gc.api.GlobalConstants;
+import br.com.gc.api.constants.GlobalConstants;
 import br.com.gc.api.model.User;
 import br.com.gc.api.repository.UserRepository;
 import br.com.gc.api.util.DateFormatSQLServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 @CrossOrigin

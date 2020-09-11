@@ -1,4 +1,4 @@
-package br.com.gc.api;
+package br.com.gc.api.constants;
 
 public final class GlobalConstants {
     public static final String CALL_SERVICE_FORMAT = "HH:mm:ss";
