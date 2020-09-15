@@ -27,8 +27,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/**/webjars/springfox-swagger-ui/**",
                         "/**/v1/product/menu/**",
                         "/**/v2/api-docs/**").permitAll()
-//                .anyRequest().authenticated()//.permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()//.permitAll()
+//                .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .csrf().disable();
