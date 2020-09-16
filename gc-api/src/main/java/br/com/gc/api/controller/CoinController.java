@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -24,6 +25,7 @@ import java.util.List;
 public class CoinController {
     public final CoinService coinService;
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MOD') and #oauth2.hasScope('read')")
     @GetMapping(path = "/getVP/loginUID/{loginUID}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VirtualCash> getVPUser(@PathVariable Integer loginUID) throws Exception {
         log.info("Call service api/v1/getVP " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));
@@ -36,6 +38,7 @@ public class CoinController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MOD') and #oauth2.hasScope('write')")
     @PostMapping(path = "/sendVP", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VirtualCash> sendVPUser(@RequestBody VirtualCash vpUser) throws Exception {
         log.info("Call service api/v1/sendVP " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));
@@ -48,6 +51,7 @@ public class CoinController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MOD') and #oauth2.hasScope('write')")
     @PostMapping(path = "/sendGP", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<CharacterInfo>> sendGPUser(@RequestBody CharacterInfo gpUser) throws Exception {
         log.info("Call service api/v1/sendGP " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));

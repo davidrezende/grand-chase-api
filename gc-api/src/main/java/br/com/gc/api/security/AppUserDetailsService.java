@@ -32,9 +32,8 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getPermissions(GCApiUsers user) {
-       //System.out.println("Pegando permissoes -> VoUsuario : " + user.toString());
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ADMINISTRADOR"));
+        authorities.add(new SimpleGrantedAuthority(user.getPermissions()));
 //        user.getUserPermissions().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getDescription().toUpperCase())));
         return authorities;
     }

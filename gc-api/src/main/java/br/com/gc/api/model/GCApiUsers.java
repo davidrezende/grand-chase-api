@@ -21,4 +21,5 @@ public class GCApiUsers {
     private Integer loginUID;
     private String login;
     private String password;
+    private String permissions;
 }
