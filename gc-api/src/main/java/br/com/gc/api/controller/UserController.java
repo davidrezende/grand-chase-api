@@ -6,6 +6,8 @@ import br.com.gc.api.error.RestExceptionHandler;
 import br.com.gc.api.model.User;
 import br.com.gc.api.repository.UserRepository;
 import br.com.gc.api.util.DateFormatSQLServer;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,15 @@ import java.util.Date;
 
 @Slf4j
 @CrossOrigin
+@Api(value = "User Endpoints")
 @RestController
-@RequestMapping("api/v1/user")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
     private final UserRepository userRepository;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MOD') and #oauth2.hasScope('read')")
+    @ApiOperation(value = "Search user by login", response = User.class)
     @GetMapping(path = "/find/login/{login}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> getUserInfo(@PathVariable String login) {
         log.info("Searching login " + login);
@@ -45,6 +49,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN') and #oauth2.hasScope('write')")
+    @ApiOperation(value = "Save new user", response = User.class)
     @PostMapping(path = "/save", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> newUser(@RequestBody @Valid User user) {
         log.info("Saving new user:");
@@ -65,6 +70,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN') and #oauth2.hasScope('write')")
+    @ApiOperation(value = "Update user by PK", response = User.class)
     @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         log.info("Updating user:");
@@ -81,6 +87,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN') and #oauth2.hasScope('write')")
+    @ApiOperation(value = "Delete user", response = User.class)
     @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void deleteUser(@RequestBody User user) throws Exception {
         log.info("Excluding user:");

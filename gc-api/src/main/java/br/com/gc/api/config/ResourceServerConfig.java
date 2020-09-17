@@ -25,7 +25,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,
                         "/**/swagger-resources/**",
                         "/**/webjars/springfox-swagger-ui/**",
-                        "/**/v1/product/menu/**",
                         "/**/v2/api-docs/**").permitAll()
                 .anyRequest().authenticated()//.permitAll()
 //                .anyRequest().permitAll()
