@@ -34,7 +34,7 @@ public class TokenController {
             log.info("Revoking token ");
             Cookie cookie = new Cookie("refreshToken", null);
             cookie.setHttpOnly(true);
-            cookie.setSecure(false);// TODO: alterar em producao
+            cookie.setSecure(true);// TODO: alterar em producao
             cookie.setPath(req.getContextPath() + "/oauth/token");
             cookie.setMaxAge(0);
             resp.addCookie(cookie);

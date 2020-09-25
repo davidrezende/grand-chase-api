@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "Characters")
 @IdClass(CharactersId.class)
-public class Characters {
+public class Character {
 
     @Id
     @NotNull(message = "Login UID for this user uninformed")

@@ -1,9 +1,11 @@
 package br.com.gc.api.controller;
 
 import br.com.gc.api.constants.GlobalConstants;
-import br.com.gc.api.model.*;
+import br.com.gc.api.model.Character;
 import br.com.gc.api.service.CharacterService;
 import br.com.gc.api.util.DateFormatSQLServer;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,16 @@ import java.util.Date;
 @Slf4j
 @CrossOrigin
 @RequestMapping("/api/v1/character")
+@Api(value = "Character endpoints")
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CharacterController {
     public final CharacterService characterService;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MOD') and #oauth2.hasScope('read')")
+    @ApiOperation(value = "Search characters from User")
     @GetMapping(path = "/findCharacters/loginUID/{loginUID}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<ArrayList<Characters>> newItemPanel(@PathVariable Integer loginUID) throws Exception {
+    public ResponseEntity<ArrayList<Character>> newItemPanel(@PathVariable Integer loginUID) throws Exception {
         log.info("Call service api/v1/findCharacters " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));
         try {
             return ResponseEntity.ok().body(characterService.getCharacters(loginUID).get());
@@ -37,12 +41,13 @@ public class CharacterController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MOD') and #oauth2.hasScope('write')")
+    @ApiOperation(value = "Update character from User", response = Character.class)
     @PostMapping(path = "/update", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Characters> updatePromotionAndEXP(@RequestBody Characters character)
+    public ResponseEntity<Character> updatePromotionAndEXP(@RequestBody Character character)
             throws Exception {
         log.info("Updating character with loginUID::" + character.getLoginUID() + " ; CharType::"+ character.getCharType());
 
-        Characters findedCharacter = characterService.getCharacter(character.getLoginUID(), character.getCharType()).get();
+        Character findedCharacter = characterService.getCharacter(character.getLoginUID(), character.getCharType()).get();
         log.info("Updating finded character::" + findedCharacter.toString());
 
         if(character.getPromotion() != null
