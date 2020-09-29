@@ -1,9 +1,6 @@
 package br.com.gc.api.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,11 +11,10 @@ import java.util.Date;
 @Setter
 @ToString
 @Entity
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "UIGAUserItem")
 public class UserItem {
-    /*    insert into UIGAUserItem  (LoginUID, ItemID, GradeID, DelDateA, DelState, WIGAUID)
-        values(@loginid1,@itemid1,'3',getdate(),'0','-1')*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemUID;

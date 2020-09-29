@@ -53,8 +53,22 @@ public class ItemController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') and #oauth2.hasScope('write')")
+    @ApiOperation(value = "Searching items by ID of a user and delete", response = UserItem.class)
+    @PostMapping(path = "/remove", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public void removeItem(@RequestBody UserItem item) throws Exception {
+        log.info("Call service api/v1/remove " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));
+        try {
+            userItemService.removeItemUser(item);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            log.info("End service api/v1/remove " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));
+        }
+    }
+
     @PreAuthorize("hasAuthority('ROLE_ADMIN') and #oauth2.hasScope('read')")
-    @ApiOperation(value = "Search last item added from user by itemID and loginUID", response = UserItem.class)
+    @ApiOperation(value = "Searching last item added a user by itemID and loginUID", response = UserItem.class)
     @GetMapping(path = "/searchLastItem/item/{itemID}/login/{loginUID}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UserItem> lastItem(@PathVariable Integer itemID, @PathVariable Integer loginUID) throws Exception {
         log.info("Call service api/v1/searchLastItem " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));

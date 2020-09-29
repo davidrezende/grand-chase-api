@@ -83,9 +83,9 @@ public class UserItemService {
                     + item.getItem().toString());
         }
 
-        log.info("Adding temporary item::" + item.getItem().getItemID() + " from panel. Player::" + item.getItem().getLoginUID()
-                + ". Number of days::" + item.getTimeItem());
         if (item.getTimeItem() != null && item.getTimeItem() > 0 && item.getTimeItem() < 1000) {
+            log.info("Adding temporary item::" + item.getItem().getItemID() + " from panel. Player::" + item.getItem().getLoginUID()
+                    + ". Number of days::" + item.getTimeItem());
             UserItemPeriod periodItem = new UserItemPeriod();
             periodItem.setLoginUID(addedItem.getLoginUID());
             periodItem.setItemUID(addedItem.getItemUID());
@@ -147,7 +147,7 @@ public class UserItemService {
                     }
 
                 }
-                
+
                 log.info("Adding attributes from this item");
                 List<UserItemAttribute> attributes = new ArrayList<>();
                 if (item.getAttributes() == null || item.getAttributes().isEmpty()) {
@@ -197,5 +197,15 @@ public class UserItemService {
             }
         }
         return item;
+    }
+
+    public void removeItemUser(UserItem item) throws Exception {
+        log.info("Remove item ::" + item.getItemID() + " for login ID::" + item.getLoginUID());
+        userItemRepository.findByLoginUIDAndItemID(item.getLoginUID(), item.getItemID())
+                .orElseThrow(() -> new Exception("Items with ID::" + item.getItemID() + "not founded for this loginUID:: " + item.getLoginUID()))
+                .forEach(itemFounded -> {
+                        log.info("Deleting item with UID::" + itemFounded.getItemUID() + " and ID::" + itemFounded.getItemID());
+                        userItemRepository.delete(itemFounded);
+                });
     }
 }
