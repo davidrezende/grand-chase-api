@@ -58,7 +58,7 @@ public class CoinController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MOD') and #oauth2.hasScope('write')")
-    @ApiOperation(value = "Send GP from User")
+    @ApiOperation(value = "Sending GP from User")
     @PostMapping(path = "/sendGP", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<CharacterInfo>> sendGPUser(@RequestBody CharacterInfo gpUser) throws Exception {
         log.info("Call service api/v1/sendGP " + DateFormatSQLServer.format(new Date(), GlobalConstants.CALL_SERVICE_FORMAT));
